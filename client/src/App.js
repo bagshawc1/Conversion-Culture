@@ -2,17 +2,19 @@ import './App.css';
 import React from "react"
 import Button from "react-bootstrap/Button";
 import { FullScreen, useFullScreenHandle } from "react-full-screen"
+import PageBanner from "./components/PageBanner/PageBanner";
 
 function App() {
-  const [data, setData] = React.useState(null);
-  const [cycleCount, setCycleCount] = React.useState(0)
+  const [data, setData] = React.useState([]);
+  const [cycleCount, setCycleCount] = React.useState(0);
   const handle = useFullScreenHandle();
 
+  // initial api call
   React.useEffect(() => {
     fetch("/api/ctc159")
         .then((res) => res.json())
         .then((data) => {
-            setData(data.urls)
+            setData(data.urls);
         })
   }, []);
 
@@ -21,12 +23,13 @@ function App() {
           setCycleCount(cycleCount => cycleCount + 1)
       }, 20000);
       return () => clearInterval(interval);
-  }, [])
-  let frame;
-   if(data){
-     frame = <iframe allowFullScreen={true} frameBorder={0} height={1080} title={'frame'} src={data[cycleCount % 3]} />;
+  }, []);
+
+  let banner;
+   if(data.length > 0){
+       banner = <PageBanner activeFrame={data[cycleCount % 3]}/>
    } else {
-     frame = <p>Loading page...</p>
+       banner = <p>Loading Page...</p>
    }
   return (
       <div className="App">
@@ -34,7 +37,7 @@ function App() {
               Fullscreen
           </Button>
           <FullScreen handle={handle}>
-              {frame}
+              {banner}
           </FullScreen>
       </div>
   );

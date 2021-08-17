@@ -1,5 +1,6 @@
 .App {
   text-align: center;
+  background: #00000d;
 }
 
 html, body, #app, #app>div {
