@@ -5,17 +5,30 @@ import { FullScreen, useFullScreenHandle } from "react-full-screen"
 import PageBanner from "./components/PageBanner/PageBanner";
 
 function App() {
-  const [data, setData] = React.useState([]);
+  const [data, setData] = React.useState();
   const [cycleCount, setCycleCount] = React.useState(0);
   const handle = useFullScreenHandle();
+  const path = window.location.pathname;
+  const [err, setErr] = React.useState(false);
 
   // initial api call
   React.useEffect(() => {
-    fetch("/api/ctc159")
-        .then((res) => res.json())
-        .then((data) => {
-            setData(data.urls);
+    fetch("/api" + path)
+        .then((res) => {
+            if(res.ok){
+                return res.json();
+            }
+            else {
+                throw new Error('cannot fetch resource, check url')
+            }
         })
+        .then((data) => {
+            console.log(data.urls);
+            setData(data.urls);
+        }).catch((err) => {
+            console.log(err.message)
+            setErr(true)
+        });
   }, []);
 
   React.useEffect(() => {
@@ -26,7 +39,7 @@ function App() {
   }, []);
 
   let banner;
-   if(data.length > 0){
+   if(data){
        banner = <PageBanner activeFrame={data[cycleCount % 3]}/>
    } else {
        banner = <p>Loading Page...</p>
@@ -39,6 +52,11 @@ function App() {
           <FullScreen handle={handle}>
               {banner}
           </FullScreen>
+          { err &&
+              <h1>
+                  Page cannot be reached
+              </h1>
+          }
       </div>
   );
 
