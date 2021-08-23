@@ -81,7 +81,7 @@ app.get("/api/f30eedd6", (req, res) => {
 });
 
 // 175 Endpoint
-app.get("/api/c2fe07ac", (req, res) => {
+app.get("/api/f97e2905", (req, res) => {
     res.json({
         'urls': [
             "https://moxie-ctcstores.clicdata.com/v/xIwdKp8SVFb0",
